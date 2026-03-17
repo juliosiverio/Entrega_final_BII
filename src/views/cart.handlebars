@@ -1,0 +1,55 @@
+<h1>Carrito de Compras</h1>
+
+{{#if cart.products.length}}
+  <table class="cart-table">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Precio Unitario</th>
+        <th>Cantidad</th>
+        <th>Subtotal</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each cart.products}}
+        <tr>
+          <td>
+            <strong>{{this.product.title}}</strong><br>
+            <small>{{this.product.category}} - {{this.product.code}}</small>
+          </td>
+          <td>${{this.product.price}}</td>
+          <td>{{this.quantity}}</td>
+          <td>${{multiply this.product.price this.quantity}}</td>
+          <td>
+            <form action="/api/carts/{{../cartId}}/products/{{this.product._id}}?_method=DELETE" method="POST" style="display: inline;">
+              <button type="submit" class="btn btn-secondary" style="padding: 5px 10px; font-size: 12px;">Eliminar</button>
+            </form>
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3" style="text-align: right; font-weight: bold;">Total:</td>
+        <td style="font-weight: bold; font-size: 18px;">
+          ${{calculateTotal cart.products}}
+        </td>
+        <td></td>
+      </tr>
+    </tfoot>
+  </table>
+  
+  <div class="product-actions" style="justify-content: center; margin-top: 20px;">
+    <a href="/products?cartId={{cartId}}" class="btn btn-primary">Seguir Comprando</a>
+    <form action="/api/carts/{{cartId}}?_method=DELETE" method="POST" style="display: inline;">
+      <button type="submit" class="btn btn-secondary">Vaciar Carrito</button>
+    </form>
+  </div>
+{{else}}
+  <p style="text-align: center; color: #666; padding: 40px;">
+    El carrito está vacío.
+    <a href="/products?cartId={{cartId}}" class="btn btn-primary" style="margin-top: 20px; display: inline-block;">Ir a Productos</a>
+  </p>
+{{/if}}
+

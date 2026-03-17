@@ -1,0 +1,73 @@
+<h1>Productos</h1>
+
+<div class="filters">
+  <form method="GET" action="/products">
+    <input 
+      type="text" 
+      name="query" 
+      placeholder="Buscar por categoría o disponibilidad" 
+      value="{{queryParams.query}}"
+    >
+    <select name="sort">
+      <option value="">Sin ordenar</option>
+      <option value="asc" {{#if (eq queryParams.sort 'asc')}}selected{{/if}}>Precio: Menor a Mayor</option>
+      <option value="desc" {{#if (eq queryParams.sort 'desc')}}selected{{/if}}>Precio: Mayor a Menor</option>
+    </select>
+    <input 
+      type="number" 
+      name="limit" 
+      placeholder="Productos por página" 
+      value="{{queryParams.limit}}"
+      min="1"
+    >
+    <button type="submit">Filtrar</button>
+    <a href="/products" class="btn btn-secondary" style="text-decoration: none;">Limpiar</a>
+  </form>
+</div>
+
+{{#if products}}
+  <div class="products-grid">
+    {{#each products}}
+      <div class="product-card">
+        <h3>{{this.title}}</h3>
+        <p><strong>Categoría:</strong> {{this.category}}</p>
+        <p><strong>Código:</strong> {{this.code}}</p>
+        <p><strong>Stock:</strong> {{this.stock}}</p>
+        <p><strong>Estado:</strong> {{#if this.status}}Disponible{{else}}No disponible{{/if}}</p>
+        <div class="product-price">${{this.price}}</div>
+        {{#if this.thumbnail}}
+          <img src="{{this.thumbnail}}" alt="{{this.title}}" style="max-width: 100%; height: auto; border-radius: 5px; margin-bottom: 10px;">
+        {{/if}}
+        <div class="product-actions">
+          <a href="/products/{{this._id}}?cartId={{../cartId}}" class="btn btn-primary">Ver Detalles</a>
+          <form action="/api/carts/{{../cartId}}/products/{{this._id}}" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-secondary">Agregar al Carrito</button>
+          </form>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+
+  <div class="pagination">
+    {{#if pagination.hasPrevPage}}
+      <a href="/products{{pagination.prevLink}}">« Anterior</a>
+    {{else}}
+      <span class="disabled">« Anterior</span>
+    {{/if}}
+    
+    <span class="current">Página {{pagination.page}} de {{pagination.totalPages}}</span>
+    
+    {{#if pagination.hasNextPage}}
+      <a href="/products{{pagination.nextLink}}">Siguiente »</a>
+    {{else}}
+      <span class="disabled">Siguiente »</span>
+    {{/if}}
+  </div>
+  
+  <div style="text-align: center; margin-top: 20px;">
+    <a href="/carts/{{cartId}}" class="btn btn-primary">Ver Carrito</a>
+  </div>
+{{else}}
+  <p style="text-align: center; color: #666; padding: 40px;">No se encontraron productos.</p>
+{{/if}}
+

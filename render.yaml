@@ -1,0 +1,15 @@
+# Configuración para Render.com
+# Para usar: importa este archivo o configura manualmente en Render
+
+services:
+  - type: web
+    name: entrega-final-backend
+    env: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGO_URI
+        sync: false  # Debes configurarlo manualmente en el dashboard de Render
+      - key: NODE_ENV
+        value: production
+
