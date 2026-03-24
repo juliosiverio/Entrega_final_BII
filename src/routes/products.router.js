@@ -1,5 +1,6 @@
 const express = require('express');
 const passport = require('passport');
+const mongoose = require('mongoose');
 const { authorization } = require('../middlewares/authorization');
 const router = express.Router();
 const Product = require('../models/Product');
@@ -111,6 +112,12 @@ router.get('/', async (req, res) => {
 router.get('/:pid', async (req, res) => {
   try {
     const { pid } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(pid)) {
+      return res.status(400).json({
+        status: 'error',
+        message: 'ID de producto inválido',
+      });
+    }
 
     const product = await Product.findById(pid);
 
